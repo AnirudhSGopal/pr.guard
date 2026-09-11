@@ -3,6 +3,7 @@ import hmac
 import hashlib
 import base64
 import json
+import logging
 from app.config import settings
 from urllib.parse import quote
 
@@ -56,11 +57,12 @@ def create_github_oauth_url(frontend_origin: str = "") -> str:
     # URL encode the redirect_uri to prevent it from breaking the URL structure
     if not (settings.APP_URL or "").strip():
         raise ValueError("APP_URL must be configured for GitHub OAuth callback routing.")
-    encoded_redirect = quote(f"{settings.APP_URL}/auth/github/callback")
+    redirect_uri = f"{settings.APP_URL.strip()}/auth/github/callback"
+    encoded_redirect = quote(redirect_uri, safe="")
     state = quote(encode_oauth_state(frontend_origin))
     
     params = (
-        f"client_id={settings.GITHUB_CLIENT_ID}"
+        f"client_id={quote(settings.GITHUB_CLIENT_ID.strip(), safe='')}"
         f"&scope=repo,read:user,user:email"
         f"&allow_signup=true"
         f"&redirect_uri={encoded_redirect}"
@@ -72,6 +74,7 @@ def create_github_oauth_url(frontend_origin: str = "") -> str:
 async def exchange_code_for_token(code: str) -> str | None:
     """Exchange OAuth code for a GitHub access token."""
 
+    redirect_uri = f"{settings.APP_URL.strip()}/auth/github/callback"
     async with httpx.AsyncClient(timeout=settings.HTTP_TIMEOUT) as client:
         resp = await client.post(
             "https://github.com/login/oauth/access_token",
@@ -80,13 +83,23 @@ async def exchange_code_for_token(code: str) -> str | None:
                 "User-Agent": "PRGuard-Assistant",
             },
             json={
-                "client_id":     settings.GITHUB_CLIENT_ID,
-                "client_secret": settings.GITHUB_CLIENT_SECRET,
+                "client_id":     settings.GITHUB_CLIENT_ID.strip(),
+                "client_secret": settings.GITHUB_CLIENT_SECRET.strip(),
                 "code":          code,
+                "redirect_uri":  redirect_uri,
             },
         )
 
     data = resp.json()
+    if resp.status_code != 200 or not data.get("access_token"):
+        error = data.get("error", "unknown_error")
+        description = data.get("error_description", "no description")
+        logging.getLogger("prguard").warning(
+            "github_token_exchange_failed status=%s error=%s description=%s",
+            resp.status_code,
+            error,
+            description,
+        )
     return data.get("access_token")
 
 

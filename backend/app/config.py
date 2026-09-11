@@ -1,4 +1,4 @@
-from pydantic import ConfigDict, model_validator
+from pydantic import ConfigDict, field_validator, model_validator
 from pydantic_settings import BaseSettings
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
@@ -56,6 +56,18 @@ class Settings(BaseSettings):
     MODEL_NAME: str = "gemini-2.5-flash"
     CHAT_ENABLE_RAG: bool = False
     PRELOAD_RAG_ON_STARTUP: bool = False
+
+    @field_validator("DEBUG", mode="before")
+    @classmethod
+    def normalize_debug_value(cls, value):
+        """Accept common deployment labels supplied by host environments."""
+        if isinstance(value, str):
+            normalized = value.strip().lower()
+            if normalized in {"release", "production", "prod"}:
+                return False
+            if normalized in {"development", "dev", "debug"}:
+                return True
+        return value
 
     def has_any_llm_key(self) -> bool:
         return any([self.ANTHROPIC_API_KEY, self.OPENAI_API_KEY, self.GEMINI_API_KEY])

@@ -33,8 +33,8 @@ def _validate_key_format(provider: str, api_key: str) -> None:
         raise HTTPException(status_code=400, detail="Claude API key must start with sk-ant-.")
     if provider == "gpt" and not key.startswith("sk-"):
         raise HTTPException(status_code=400, detail="OpenAI API key must start with sk-.")
-    if provider == "gemini" and not key.startswith("AIza"):
-        raise HTTPException(status_code=400, detail="Gemini API key must start with AIza.")
+    # Google-issued credentials can use formats other than the legacy AIza
+    # prefix. Provider authentication remains the source of truth.
 
 
 def mask_key(api_key: str) -> str:

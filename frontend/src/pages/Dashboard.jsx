@@ -395,7 +395,7 @@ export default function Dashboard() {
           {/* Scroll container */}
           <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
             {leftTab === 'issues'
-              ? <IssueList issues={issues} selectedIssue={selectedIssue} onSelectIssue={handleIssueSelect} loading={issuesLoading} />
+              ? <IssueList issues={issues} selectedIssue={selectedIssue} onSelectIssue={handleIssueSelect} loading={issuesLoading} repo={selectedRepo} />
               : <FileTree  files={files}   onFileSelect={handleFileSelect} />
             }
           </div>
@@ -492,7 +492,7 @@ export default function Dashboard() {
                           value={apiKeys[provider.id]}
                           onChange={e => setApiKeys(prev => ({ ...prev, [provider.id]: e.target.value }))}
                           onKeyDown={e => { if (e.key === 'Enter') handleApiSave(provider.id) }}
-                          placeholder={provider.placeholder}
+                          placeholder={provider.id === 'gemini' ? 'Google AI key' : provider.placeholder}
                           style={{ flex: 1, minWidth: 0, padding: '4px 7px', fontSize: 10, fontFamily: 'monospace', background: 'transparent', border: 'none', color: t.text, outline: 'none' }}
                         />
                         <button type="button" onClick={() => setShowKeys(prev => ({ ...prev, [provider.id]: !prev[provider.id] }))}

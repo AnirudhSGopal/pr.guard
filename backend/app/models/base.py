@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from uuid import uuid4
 
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
@@ -39,22 +40,22 @@ def _build_engine():
             # statements (same constraint as PgBouncer). Disable asyncpg's
             # statement cache to avoid extra round-trips and silent failures.
             connect_args["statement_cache_size"] = 0
+            # Do not reuse a driver connection across transactions. Supavisor
+            # may route each transaction to a different database connection.
+            engine_kwargs["poolclass"] = NullPool
+            connect_args["prepared_statement_name_func"] = lambda: f"__asyncpg_{uuid4()}__"
 
-        # When using an external pooler (Supabase Supavisor), keep the
-        # local pool small — Supavisor handles connection multiplexing.
-        pool_size = 2 if is_supabase_pooler else max(int(settings.DB_POOL_SIZE), 1)
-        max_overflow = 3 if is_supabase_pooler else max(int(settings.DB_MAX_OVERFLOW), 0)
-
-        engine_kwargs.update(
-            {
-                "pool_size": pool_size,
-                "max_overflow": max_overflow,
-                "pool_timeout": max(int(settings.DB_POOL_TIMEOUT), 1),
-                "pool_recycle": max(int(settings.DB_POOL_RECYCLE), 0),
-                "pool_use_lifo": True,
-                "connect_args": connect_args,
-            }
-        )
+        engine_kwargs["connect_args"] = connect_args
+        if not is_supabase_pooler:
+            engine_kwargs.update(
+                {
+                    "pool_size": max(int(settings.DB_POOL_SIZE), 1),
+                    "max_overflow": max(int(settings.DB_MAX_OVERFLOW), 0),
+                    "pool_timeout": max(int(settings.DB_POOL_TIMEOUT), 1),
+                    "pool_recycle": max(int(settings.DB_POOL_RECYCLE), 0),
+                    "pool_use_lifo": True,
+                }
+            )
 
     return create_async_engine(database_url, **engine_kwargs)
 
