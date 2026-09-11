@@ -84,7 +84,7 @@ async def chat(
     
     try:
         # ── RATE LIMIT CHECK ──
-        chat_limiter.check("global")
+        chat_limiter.check(f"user:{user.id}")
         logger.info(f"[CHAT] Rate limit check passed")
 
         if not request.repo:
@@ -260,9 +260,8 @@ async def index_repository(
     db: AsyncSession = Depends(get_db),
 ):
     # ── RATE LIMIT CHECK ──
-    index_limiter.check("global")
-
     user = current_user
+    index_limiter.check(f"user:{user.id}")
 
     stmt = select(ConnectedRepository).where(
         ConnectedRepository.user_id == user.id,

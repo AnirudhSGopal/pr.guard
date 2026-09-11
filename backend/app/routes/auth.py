@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import json
 import logging
+import hmac
 from datetime import datetime, timezone
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -110,7 +111,19 @@ async def github_login(
         logger.info("signup_blocked_for_admin user_id=%s", session_user.id)
         return RedirectResponse(url=f"{origin}/admin/login?reason=admin_local_login_required")
 
-    return RedirectResponse(url=create_github_oauth_url(frontend_origin=origin))
+    oauth_url = create_github_oauth_url(frontend_origin=origin)
+    state_value = parse_qs(urlparse(oauth_url).query).get("state", [""])[0]
+    response = RedirectResponse(url=oauth_url)
+    response.set_cookie(
+        key="oauth_state",
+        value=state_value,
+        httponly=True,
+        secure=settings.ENVIRONMENT == "production",
+        samesite="lax",
+        max_age=600,
+        path="/auth",
+    )
+    return response
 
 
 async def _load_or_create_github_user(
@@ -214,6 +227,7 @@ async def github_callback(
     installation_id: str = "",
     error: str = "",
     state: str = "",
+    oauth_state: str | None = Cookie(default=None, alias="oauth_state"),
     user_token: str | None = Cookie(default=None, alias=USER_SESSION_COOKIE_NAME),
     db: AsyncSession = Depends(get_db),
 ):
@@ -236,6 +250,8 @@ async def github_callback(
         raise HTTPException(status_code=401, detail="Invalid GitHub token")
 
     state_data = decode_oauth_state(state)
+    if not state_data or not oauth_state or not hmac.compare_digest(state, oauth_state):
+        raise HTTPException(status_code=400, detail="Invalid or expired OAuth state")
     state_frontend = _normalize_frontend_origin(str(state_data.get("frontend_origin", "")))
     configured_frontend = _normalize_frontend_origin((settings.FRONTEND_URL or "").strip())
     frontend_url = state_frontend or configured_frontend
@@ -273,6 +289,13 @@ async def github_callback(
     payload = json.dumps(_build_session_payload(db_user))
     callback_target = f"{frontend_url}/auth/callback"
     response = _build_redirect_page(callback_target, "Signing in, please wait...", payload)
+    response.delete_cookie(
+        key="oauth_state",
+        path="/auth",
+        secure=settings.ENVIRONMENT == "production",
+        httponly=True,
+        samesite="lax",
+    )
 
     is_prod = settings.ENVIRONMENT == "production"
     response.set_cookie(

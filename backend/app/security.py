@@ -4,6 +4,7 @@ import hashlib
 import base64
 import json
 import logging
+import time
 from app.config import settings
 from urllib.parse import quote
 
@@ -35,17 +36,36 @@ def verify_signature(payload: bytes, signature: str) -> bool:
 
 
 def encode_oauth_state(frontend_origin: str = "") -> str:
-    payload = {"frontend_origin": (frontend_origin or "").strip()}
+    payload = {
+        "frontend_origin": (frontend_origin or "").strip(),
+        "issued_at": int(time.time()),
+    }
     raw = json.dumps(payload, separators=(",", ":")).encode("utf-8")
-    return base64.urlsafe_b64encode(raw).decode("utf-8")
+    encoded = base64.urlsafe_b64encode(raw).decode("ascii").rstrip("=")
+    signature = hmac.new(
+        settings.SECRET_KEY.encode("utf-8"),
+        encoded.encode("ascii"),
+        hashlib.sha256,
+    ).hexdigest()
+    return f"{encoded}.{signature}"
 
 
 def decode_oauth_state(state: str) -> dict:
     try:
-        if not state:
+        encoded, signature = (state or "").rsplit(".", 1)
+        expected = hmac.new(
+            settings.SECRET_KEY.encode("utf-8"),
+            encoded.encode("ascii"),
+            hashlib.sha256,
+        ).hexdigest()
+        if not hmac.compare_digest(expected, signature):
             return {}
-        decoded = base64.urlsafe_b64decode(state.encode("utf-8")).decode("utf-8")
+        padded = encoded + ("=" * (-len(encoded) % 4))
+        decoded = base64.urlsafe_b64decode(padded.encode("ascii")).decode("utf-8")
         data = json.loads(decoded)
+        issued_at = int(data.get("issued_at", 0))
+        if not issued_at or abs(time.time() - issued_at) > 600:
+            return {}
         return data if isinstance(data, dict) else {}
     except Exception:
         return {}

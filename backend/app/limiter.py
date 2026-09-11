@@ -3,8 +3,9 @@ import threading
 from collections import defaultdict
 from fastapi import HTTPException, Request
 
-# ── Simple In-Memory Limiter ──────────────────────────────────────────────────
-# In production, use Redis. For now, this protects the dev environment.
+# ── Process-local limiter ─────────────────────────────────────────────────────
+# Keys are scoped to authenticated users. Deployments with multiple web
+# instances should still put a shared gateway/API rate limiter in front.
 
 class SimpleLimiter:
     def __init__(self, requests_per_minute: int = 10):

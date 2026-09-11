@@ -105,7 +105,7 @@ async def startup():
     except Exception as e:
         print(f"[CRITICAL] System startup failed: {e}")
         # In production, we exit. In dev, we might allow limited mode.
-        if settings.ENVIRONMENT == "production":
+        if not settings.is_development():
             import sys
 
             sys.exit(1)
@@ -131,8 +131,8 @@ async def health(response: Response):
         "service": "PRGuard",
         "database_url_configured": required_env_loaded,
         "database_connected": database_connected,
-        "database_target": settings.database_host_summary(),
-        "database_error": database_error,
+        "database_target": settings.database_host_summary() if settings.is_development() else None,
+        "database_error": database_error if settings.is_development() else None,
         "llm_key_configured": llm_key_configured,
         "env_loaded": required_env_loaded,
     }
@@ -146,7 +146,7 @@ async def health_db(response: Response):
         return {
             "status": "ok",
             "database_connected": True,
-            "database_target": settings.database_host_summary(),
+            "database_target": settings.database_host_summary() if settings.is_development() else None,
         }
     except Exception as exc:
         logger.error("DB health check failed: %s", exc)
@@ -154,6 +154,6 @@ async def health_db(response: Response):
         return {
             "status": "error",
             "database_connected": False,
-            "database_target": settings.database_host_summary(),
-            "error": str(exc),
+            "database_target": settings.database_host_summary() if settings.is_development() else None,
+            "error": str(exc) if settings.is_development() else "Database unavailable",
         }
