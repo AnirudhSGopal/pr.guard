@@ -636,7 +636,11 @@ export default function ChatPanel({ selectedRepo, selectedIssue, chatInput, setC
 
   // ── sendVisualization — calls backend ─────────────────────────────────────
   const sendVisualization = async () => {
-    if (!selectedRepo || loading) return
+    if (!selectedRepo) {
+      setConnectOpen(true)
+      return
+    }
+    if (loading) return
     // ✅ Guard: no API key → show modal immediately, abort
     if (noKey) { setNoKeyModal(true); return }
 
@@ -950,7 +954,7 @@ export default function ChatPanel({ selectedRepo, selectedIssue, chatInput, setC
               onChange={e => setChatInput(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage() } }}
               placeholder={noKey ? "Please add an API key in settings to chat..." : "Ask anything about this codebase... or click an issue / file →"}
-              disabled={noKey || loading}
+              disabled={loading}
               rows={1}
               style={{ flex: 1, minWidth: 0, resize: 'none', outline: 'none', background: 'transparent', border: 'none', padding: '4px 4px', fontSize: 13, fontFamily: 'inherit', color: t.text, lineHeight: 1.55, maxHeight: 120, overflowY: 'auto', cursor: noKey ? 'not-allowed' : 'text', opacity: noKey ? 0.6 : 1 }} />
 
@@ -994,8 +998,17 @@ export default function ChatPanel({ selectedRepo, selectedIssue, chatInput, setC
                 </svg>
               </button>
             ) : (
-              <button onClick={() => sendMessage()} disabled={noKey || !(chatInput ?? '').trim() || loading}
-                style={{ width: 32, height: 32, borderRadius: 8, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: (chatInput ?? '').trim() && !loading && !noKey ? 'pointer' : 'not-allowed', background: (chatInput ?? '').trim() && !loading && !noKey ? t.accent : (dark ? '#1e2535' : '#e8eaf0'), border: `1px solid ${(chatInput ?? '').trim() && !loading && !noKey ? t.accent : t.border}`, transition: 'all 0.15s', color: (chatInput ?? '').trim() && !loading && !noKey ? t.accentFg : t.text3 }}>
+              <button
+                aria-label={noKey ? 'Open LLM key settings' : 'Send message'}
+                title={noKey ? 'Add an API key to send messages' : 'Send message'}
+                onClick={() => {
+                if (noKey) {
+                  setNoKeyModal(true)
+                  return
+                }
+                sendMessage()
+              }} disabled={!(chatInput ?? '').trim() || loading}
+                style={{ width: 32, height: 32, borderRadius: 8, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: (chatInput ?? '').trim() && !loading ? 'pointer' : 'not-allowed', background: (chatInput ?? '').trim() && !loading ? t.accent : (dark ? '#1e2535' : '#e8eaf0'), border: `1px solid ${(chatInput ?? '').trim() && !loading ? t.accent : t.border}`, transition: 'all 0.15s', color: (chatInput ?? '').trim() && !loading ? t.accentFg : t.text3 }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
                 </svg>
