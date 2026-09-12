@@ -141,6 +141,8 @@ export default function Dashboard() {
   }, [])
 
   const handleFileSelect = useCallback((filePath) => {
+    setMobilePane('chat')
+    setSelectedIssue(null)
     setChatInput(`Explain what ${filePath} does and how it connects to the rest of the codebase.`)
     setAutoSend(false)
   }, [])

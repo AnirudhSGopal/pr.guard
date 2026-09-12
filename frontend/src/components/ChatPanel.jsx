@@ -222,7 +222,7 @@ function ImageBubble({ content, t, dark }) {
 // ── Plain text bubble ─────────────────────────────────────────────────────────
 function TextBubble({ content, t, dark, isUser }) {
   return (
-    <div style={{ maxWidth: '80%', padding: '9px 13px', borderRadius: isUser ? '14px 4px 14px 14px' : '4px 14px 14px 14px', background: isUser ? (dark ? '#1e2535' : '#fef3c7') : (dark ? '#13161b' : '#fff'), border: `1px solid ${isUser ? (dark ? t.accent + '44' : '#d4860a44') : t.border}`, fontSize: 13, lineHeight: 1.65, color: t.text, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+    <div className={`chat-message-bubble ${isUser ? 'user-message-bubble' : 'assistant-message-bubble'}`} style={{ maxWidth: '80%', padding: '9px 13px', borderRadius: isUser ? '14px 4px 14px 14px' : '4px 14px 14px 14px', background: isUser ? (dark ? '#1e2535' : '#fef3c7') : (dark ? '#13161b' : '#fff'), border: `1px solid ${isUser ? (dark ? t.accent + '44' : '#d4860a44') : t.border}`, fontSize: 13, lineHeight: 1.65, color: t.text, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
       {content.split(/(```[\s\S]*?```)/g).map((part, i) => {
         if (part.startsWith('```') && part.endsWith('```')) {
           const code = part.slice(3, -3).replace(/^[a-z]+\n/, '')
@@ -266,13 +266,13 @@ function MessageBubble({ msg, t, dark, onFollowUp }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: isUser ? 'row-reverse' : 'row', alignItems: 'flex-start', gap: 8, padding: '6px 16px' }}>
+    <div className="chat-message-row" style={{ display: 'flex', flexDirection: isUser ? 'row-reverse' : 'row', alignItems: 'flex-start', gap: 8, padding: '6px 16px' }}>
       {!isUser && (
         <div style={{ width: 24, height: 24, borderRadius: '50%', flexShrink: 0, background: msg.isError ? '#ef444422' : t.accent + '22', border: `1px solid ${msg.isError ? '#ef444444' : t.accent + '44'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 2 }}>
           <span style={{ fontSize: 9, color: msg.isError ? '#ef4444' : t.accentText, fontWeight: 700 }}>PG</span>
         </div>
       )}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, maxWidth: '80%' }}>
+      <div className="chat-message-content" style={{ display: 'flex', flexDirection: 'column', gap: 4, maxWidth: '80%', minWidth: 0 }}>
         {renderContent()}
         {msg.isError && (
             <button onClick={() => onFollowUp("retry_last")} style={{ alignSelf: 'flex-start', padding: '4px 8px', fontSize: 10, background: dark ? '#2a1010' : '#fee2e2', color: '#ef4444', border: '1px solid #ef444466', borderRadius: 6, cursor: 'pointer', marginTop: 4 }}>
@@ -812,7 +812,7 @@ export default function ChatPanel({ selectedRepo, selectedIssue, chatInput, setC
   const barBg = dark ? '#0d0f12' : '#f0f2f5'
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: t.bg, overflow: 'hidden', position: 'relative' }}>
+    <div className="chat-panel" style={{ display: 'flex', flexDirection: 'column', height: '100%', background: t.bg, overflow: 'hidden', position: 'relative' }}>
 
       {/* Header */}
       <div className="chat-context-header" style={{ padding: '10px 16px', borderBottom: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>

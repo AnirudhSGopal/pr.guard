@@ -78,6 +78,7 @@ body.theme-light ::-webkit-scrollbar-thumb:hover { background: #d97706; }
     color: inherit;
     opacity: .62;
     font: 500 11px 'IBM Plex Mono', monospace;
+    line-height: 1.2;
   }
   .mobile-pane-nav button.active {
     opacity: 1;
@@ -107,7 +108,7 @@ body.theme-light ::-webkit-scrollbar-thumb:hover { background: #d97706; }
   .dashboard-status-bar button { min-height: 28px; padding: 4px 6px !important; }
 
   /* Keep chat content readable without forcing horizontal page scrolling. */
-  .chat-pane textarea, .chat-pane input { font-size: 16px !important; }
+  .chat-pane textarea, .chat-pane input { font-size: 14px !important; }
   .chat-pane button { min-height: 44px; }
   .chat-pane svg { max-width: 100%; }
   .chat-context-header {
@@ -121,6 +122,7 @@ body.theme-light ::-webkit-scrollbar-thumb:hover { background: #d97706; }
     min-width: 0;
     overflow-wrap: anywhere;
     line-height: 1.4;
+    font-size: 13px !important;
   }
   .chat-context-actions {
     width: 100%;
@@ -131,8 +133,11 @@ body.theme-light ::-webkit-scrollbar-thumb:hover { background: #d97706; }
     min-height: 40px;
     padding: 8px 10px !important;
   }
-  .chat-messages { min-height: 0; padding: 4px 0 !important; }
-  .chat-messages > div { max-width: 100%; }
+  .chat-messages { min-height: 0; padding: 4px 0 !important; font-size: 13px; }
+  .chat-message-row { width: 100%; padding: 6px 12px !important; gap: 6px !important; }
+  .chat-message-content { max-width: calc(100% - 30px) !important; }
+  .chat-message-bubble { max-width: 100% !important; padding: 8px 11px !important; font-size: 13px !important; line-height: 1.5 !important; }
+  .chat-message-bubble pre { max-width: 100%; font-size: 11px !important; }
   .chat-input-bar {
     padding: 8px 10px calc(10px + env(safe-area-inset-bottom)) !important;
   }
@@ -158,6 +163,7 @@ body.theme-light ::-webkit-scrollbar-thumb:hover { background: #d97706; }
     min-width: 0;
     min-height: 44px;
     padding: 8px 6px !important;
+    font-size: 14px !important;
   }
   .chat-composer-input::placeholder {
     white-space: nowrap;
@@ -174,6 +180,7 @@ body.theme-light ::-webkit-scrollbar-thumb:hover { background: #d97706; }
     width: 100%;
     justify-content: space-between;
     min-height: 44px;
+    font-size: 13px !important;
   }
   .chat-composer > button:last-child {
     grid-column: 3;
@@ -184,6 +191,8 @@ body.theme-light ::-webkit-scrollbar-thumb:hover { background: #d97706; }
     min-width: 44px;
   }
   .chat-input-bar > p { line-height: 1.35; margin-bottom: 0 !important; }
+  .chat-input-bar > p { font-size: 9px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ask-badge { opacity: 1 !important; }
   .issue-summary-grid, .issue-actions-grid { grid-template-columns: 1fr !important; }
   .issue-visualization { max-width: 100% !important; }
 }
