@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ThemeContext } from '../App'
 import { getTheme } from '../utils/helpers'
 import { useAuth } from '../hooks/useAuth'
@@ -30,20 +31,35 @@ function MoonIcon() {
 export default function Navbar() {
   const { theme, setTheme } = useContext(ThemeContext)
   const { user, logout }    = useAuth()
+  const navigate = useNavigate()
   const t = getTheme(theme)
 
   return (
     <nav
       style={{ background: t.bg2, borderBottom: `1px solid ${t.border}` }}
-      className="h-10 flex items-center justify-between px-4 flex-shrink-0"
+      className="dashboard-navbar h-10 flex items-center justify-between px-4 flex-shrink-0"
     >
       {/* Left — logo */}
-      <div className="flex items-center gap-2">
+      <button
+        type="button"
+        onClick={() => navigate('/')}
+        aria-label="Back to PRGuard home"
+        title="Back to home"
+        className="flex items-center gap-2 min-w-0"
+        style={{
+          border: 'none',
+          padding: 0,
+          background: 'transparent',
+          color: t.text,
+          cursor: 'pointer',
+        }}
+      >
+        <span aria-hidden="true" style={{ fontSize: 18, lineHeight: 1, color: t.text2 }}>←</span>
         <img src="/prguard-logo.svg" alt="PRGuard" style={{ width: 104, height: 32 }} />
         <span className="text-xs ml-2" style={{ color: t.text3 }}>
           Codebase Learning Assistant
         </span>
-      </div>
+      </button>
 
       {/* Right — controls */}
       <div className="flex items-center gap-3">

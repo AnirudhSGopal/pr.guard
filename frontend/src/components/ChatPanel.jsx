@@ -811,13 +811,13 @@ export default function ChatPanel({ selectedRepo, selectedIssue, chatInput, setC
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: t.bg, overflow: 'hidden', position: 'relative' }}>
 
       {/* Header */}
-      <div style={{ padding: '10px 16px', borderBottom: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+      <div className="chat-context-header" style={{ padding: '10px 16px', borderBottom: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
         <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#22c55e', flexShrink: 0 }} />
         <span style={{ fontSize: 12, color: t.text2 }}>
           {selectedIssue ? `Issue #${selectedIssue.number} · ${selectedRepo}` : `Chatting about ${selectedRepo}`}
         </span>
 
-        <div style={{ marginLeft: 'auto', display: 'flex', background: dark ? '#1e2535' : '#f0f0f0', borderRadius: 7, padding: 2, gap: 1 }}>
+        <div className="chat-context-actions" style={{ marginLeft: 'auto', display: 'flex', background: dark ? '#1e2535' : '#f0f0f0', borderRadius: 7, padding: 2, gap: 1 }}>
           {[{ id: false, label: 'Chat' }, { id: true, label: selectedIssue ? '⬡ Visualize' : '⬡ Repo Visualize' }].map(opt => (
             <button key={String(opt.id)} onClick={() => setVizMode(opt.id)}
               style={{ padding: '3px 10px', borderRadius: 5, fontSize: 10, fontWeight: 500, cursor: 'pointer', border: 'none', transition: 'all 0.15s', background: vizMode === opt.id ? (dark ? t.accent : '#fff') : 'transparent', color: vizMode === opt.id ? (dark ? t.accentFg : t.accentText) : t.text3, boxShadow: vizMode === opt.id ? '0 1px 3px rgba(0,0,0,0.15)' : 'none' }}>
@@ -834,7 +834,7 @@ export default function ChatPanel({ selectedRepo, selectedIssue, chatInput, setC
       </div>
 
       {/* Messages */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
+      <div className="chat-messages" style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
         {isEmpty && (
           <div style={{ padding: '16px 16px 8px' }}>
             <div style={{ background: dark ? '#13161b' : '#fff', border: `1px solid ${t.border}`, borderRadius: 12, padding: '14px 16px' }}>
@@ -886,7 +886,7 @@ export default function ChatPanel({ selectedRepo, selectedIssue, chatInput, setC
       )}
 
       {/* Input bar */}
-      <div style={{ padding: '10px 14px 12px', borderTop: `1px solid ${t.border}`, background: barBg, flexShrink: 0 }}>
+      <div className="chat-input-bar" style={{ padding: '10px 14px 12px', borderTop: `1px solid ${t.border}`, background: barBg, flexShrink: 0 }}>
 
         {attachedFiles.length > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
@@ -913,7 +913,7 @@ export default function ChatPanel({ selectedRepo, selectedIssue, chatInput, setC
             </button>
           </div>
         ) : (
-          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, background: inputBg, border: `1px solid ${chatInput ? t.accent : t.border}`, borderRadius: 12, padding: '8px 8px 8px 6px', transition: 'border-color 0.15s' }}>
+          <div className="chat-composer" style={{ display: 'flex', alignItems: 'flex-end', gap: 6, background: inputBg, border: `1px solid ${chatInput ? t.accent : t.border}`, borderRadius: 12, padding: '8px 8px 8px 6px', transition: 'border-color 0.15s' }}>
 
             <div style={{ position: 'relative', flexShrink: 0 }} ref={plusBtnRef}>
               <button onClick={() => setPlusMenuOpen(p => !p)} title="Attach or connect"
@@ -946,7 +946,7 @@ export default function ChatPanel({ selectedRepo, selectedIssue, chatInput, setC
               )}
             </div>
 
-            <textarea ref={textareaRef} value={chatInput ?? ''}
+            <textarea className="chat-composer-input" ref={textareaRef} value={chatInput ?? ''}
               onChange={e => setChatInput(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage() } }}
               placeholder={noKey ? "Please add an API key in settings to chat..." : "Ask anything about this codebase... or click an issue / file →"}
@@ -954,9 +954,9 @@ export default function ChatPanel({ selectedRepo, selectedIssue, chatInput, setC
               rows={1}
               style={{ flex: 1, resize: 'none', outline: 'none', background: 'transparent', border: 'none', padding: '4px 4px', fontSize: 13, fontFamily: 'inherit', color: t.text, lineHeight: 1.55, maxHeight: 120, overflowY: 'auto', cursor: noKey ? 'not-allowed' : 'text', opacity: noKey ? 0.6 : 1 }} />
 
-            <div style={{ position: 'relative', flexShrink: 0 }} ref={modelBtnRef}>
+            <div className="chat-model-picker" style={{ position: 'relative', flexShrink: 0 }} ref={modelBtnRef}>
               <button onClick={() => setModelMenuOpen(p => !p)}
-                style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px', borderRadius: 7, background: modelMenuOpen ? (dark ? '#1e2535' : '#e8e8e8') : (dark ? '#1a2030' : '#f0f0f0'), border: `1px solid ${dark ? '#2a3a50' : '#d8d8d8'}`, cursor: 'pointer', fontSize: 11, fontWeight: 500, color: t.text2, transition: 'all 0.15s', whiteSpace: 'nowrap' }}
+                style={{ minHeight: 36, display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px', borderRadius: 7, background: modelMenuOpen ? (dark ? '#1e2535' : '#e8e8e8') : (dark ? '#1a2030' : '#f0f0f0'), border: `1px solid ${dark ? '#2a3a50' : '#d8d8d8'}`, cursor: 'pointer', fontSize: 11, fontWeight: 500, color: t.text2, transition: 'all 0.15s', whiteSpace: 'nowrap' }}
                 onMouseEnter={e => e.currentTarget.style.background = dark ? '#1e2535' : '#e4e4e4'}
                 onMouseLeave={e => e.currentTarget.style.background = modelMenuOpen ? (dark ? '#1e2535' : '#e8e8e8') : (dark ? '#1a2030' : '#f0f0f0')}>
                 <span>{selectedModel.label}</span>
