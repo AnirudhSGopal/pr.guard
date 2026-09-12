@@ -10,26 +10,24 @@ export const useSession = () => {
     let active = true
 
     const loadSession = async () => {
-      try {
-        const [userSession, adminSession] = await Promise.all([getMe(), getAdminMe()])
-        if (!active) return
+      const [userResult, adminResult] = await Promise.allSettled([getMe(), getAdminMe()])
+      if (!active) return
 
-        if (userSession?.login) {
-          setSessionRole('user')
-          setSessionUser(userSession)
-          return
-        }
+      const userSession = userResult.status === 'fulfilled' ? userResult.value : null
+      const adminSession = adminResult.status === 'fulfilled' ? adminResult.value : null
 
-        if (adminSession?.role === 'admin') {
-          setSessionRole('admin')
-          setSessionUser(adminSession)
-          return
-        }
-      } catch {
-        // Ignore and fall through to the unauthenticated state.
+      if (userSession?.login) {
+        setSessionRole('user')
+        setSessionUser(userSession)
+        return
       }
 
-      if (!active) return
+      if (adminSession?.role === 'admin') {
+        setSessionRole('admin')
+        setSessionUser(adminSession)
+        return
+      }
+
       setSessionRole(null)
       setSessionUser(null)
     }

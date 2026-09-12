@@ -271,6 +271,7 @@ export const getMe = async () => {
     const res = await client.get('/auth/me', {
       // Unauthenticated is an expected state during bootstrap.
       validateStatus: (status) => status === 200 || status === 401,
+      timeout: 10000,
     })
     if (res.status === 401) {
       return null
@@ -315,13 +316,18 @@ export const adminLogout = async () => {
 }
 
 export const getAdminMe = async () => {
-  const res = await client.get('/admin/me', {
-    validateStatus: (status) => status === 200 || status === 401 || status === 403,
-  })
-  if (res.status !== 200) {
+  try {
+    const res = await client.get('/admin/me', {
+      validateStatus: (status) => status === 200 || status === 401 || status === 403,
+      timeout: 10000,
+    })
+    if (res.status !== 200) {
+      return null
+    }
+    return res.data
+  } catch {
     return null
   }
-  return res.data
 }
 
 export const getAdminUsers = async (params = {}) => {

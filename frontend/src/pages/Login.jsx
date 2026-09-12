@@ -336,7 +336,7 @@ export const getStyles = (theme) => {
 };
 
 export default function Login() {
-  const { loading, isAdmin, isUser } = useSession();
+  const { isAdmin, isUser } = useSession();
   const [mounted, setMounted] = useState(false);
   const [theme, setTheme] = useState(() =>
     localStorage.getItem("prguard-theme") || "dark"
@@ -345,14 +345,6 @@ export default function Login() {
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  if (loading) {
-    return (
-      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0d0f12', color: '#6b7280' }}>
-        Loading...
-      </div>
-    )
-  }
 
   if (isAdmin) {
     return <Navigate to="/admin/dashboard" replace />

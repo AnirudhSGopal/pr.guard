@@ -62,9 +62,9 @@ export default function Landing() {
           <button
             onClick={() => navigate('/login')}
             className="text-xs px-3 py-1.5 rounded font-bold"
-            style={{ background: t.accentBg, color: t.accentFg }}
+            style={{ background: t.bg3, color: t.text2, border: `1px solid ${t.border}` }}
           >
-            Open Dashboard →
+            Log In
           </button>
         </div>
       </nav>
@@ -90,18 +90,18 @@ export default function Landing() {
 
         <div className="flex items-center justify-center gap-3 flex-wrap">
           <button
-            onClick={() => navigate('/login')}
+            onClick={() => navigate('/signup')}
             className="px-8 py-3.5 rounded-lg font-bold text-sm"
             style={{ background: t.accentBg, color: t.accentFg }}
           >
-            User Login →
+            Get Started →
           </button>
           <button
-            onClick={() => navigate('/admin/login')}
+            onClick={() => navigate('/login')}
             className="px-6 py-3.5 rounded-lg font-bold text-sm"
             style={{ background: t.bg3, color: t.text2, border: `1px solid ${t.border}` }}
           >
-            Admin Login
+            Log In →
           </button>
         </div>
 

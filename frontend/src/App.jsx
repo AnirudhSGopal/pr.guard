@@ -17,9 +17,8 @@ function LoadingScreen() {
 }
 
 function SessionBootstrapRoute() {
-  const { loading, isAdmin, isUser } = useSession()
+  const { isAdmin, isUser } = useSession()
 
-  if (loading) return <LoadingScreen />
   if (isUser) return <Navigate to="/dashboard" replace />
   if (isAdmin) return <Navigate to="/admin/dashboard" replace />
   return <Landing />
