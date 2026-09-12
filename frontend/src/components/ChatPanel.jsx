@@ -814,7 +814,7 @@ export default function ChatPanel({ selectedRepo, selectedIssue, chatInput, setC
       <div className="chat-context-header" style={{ padding: '10px 16px', borderBottom: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
         <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#22c55e', flexShrink: 0 }} />
         <span style={{ fontSize: 12, color: t.text2 }}>
-          {selectedIssue ? `Issue #${selectedIssue.number} · ${selectedRepo}` : `Chatting about ${selectedRepo}`}
+          {selectedIssue ? `Issue #${selectedIssue.number} · ${selectedRepo || 'Select a repository'}` : `Chatting about ${selectedRepo || 'Select a repository'}`}
         </span>
 
         <div className="chat-context-actions" style={{ marginLeft: 'auto', display: 'flex', background: dark ? '#1e2535' : '#f0f0f0', borderRadius: 7, padding: 2, gap: 1 }}>
@@ -836,7 +836,7 @@ export default function ChatPanel({ selectedRepo, selectedIssue, chatInput, setC
       {/* Messages */}
       <div className="chat-messages" style={{ flex: 1, overflowY: 'auto', padding: '8px 0' }}>
         {isEmpty && (
-          <div style={{ padding: '16px 16px 8px' }}>
+          <div style={{ padding: '12px 16px 4px' }}>
             <div style={{ background: dark ? '#13161b' : '#fff', border: `1px solid ${t.border}`, borderRadius: 12, padding: '14px 16px' }}>
               <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: t.accentText, marginBottom: 8 }}>PRGUARD AI</div>
               <p style={{ fontSize: 13, color: t.text, lineHeight: 1.65, margin: 0 }}>
@@ -866,7 +866,7 @@ export default function ChatPanel({ selectedRepo, selectedIssue, chatInput, setC
 
       {/* Suggestion chips */}
       {isEmpty && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, padding: '0 16px 10px', flexShrink: 0 }}>
+        <div className="chat-suggestions" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, padding: '4px 16px 10px', flexShrink: 0 }}>
           {selectedRepo && (
             <button onClick={sendVisualization}
               style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '9px 12px', fontSize: 12, fontWeight: 600, color: t.accentFg, background: t.accentBg, border: `1px solid ${t.accent}`, borderRadius: 8, cursor: 'pointer', transition: 'all 0.15s' }}>
@@ -952,7 +952,7 @@ export default function ChatPanel({ selectedRepo, selectedIssue, chatInput, setC
               placeholder={noKey ? "Please add an API key in settings to chat..." : "Ask anything about this codebase... or click an issue / file →"}
               disabled={noKey || loading}
               rows={1}
-              style={{ flex: 1, resize: 'none', outline: 'none', background: 'transparent', border: 'none', padding: '4px 4px', fontSize: 13, fontFamily: 'inherit', color: t.text, lineHeight: 1.55, maxHeight: 120, overflowY: 'auto', cursor: noKey ? 'not-allowed' : 'text', opacity: noKey ? 0.6 : 1 }} />
+              style={{ flex: 1, minWidth: 0, resize: 'none', outline: 'none', background: 'transparent', border: 'none', padding: '4px 4px', fontSize: 13, fontFamily: 'inherit', color: t.text, lineHeight: 1.55, maxHeight: 120, overflowY: 'auto', cursor: noKey ? 'not-allowed' : 'text', opacity: noKey ? 0.6 : 1 }} />
 
             <div className="chat-model-picker" style={{ position: 'relative', flexShrink: 0 }} ref={modelBtnRef}>
               <button onClick={() => setModelMenuOpen(p => !p)}

@@ -148,6 +148,11 @@ body.theme-light ::-webkit-scrollbar-thumb:hover { background: #d97706; }
     min-height: 44px;
     padding: 8px 6px !important;
   }
+  .chat-composer-input::placeholder {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
   .chat-composer > div:first-child { order: 0; }
   .chat-model-picker {
     order: 3;
@@ -166,6 +171,20 @@ body.theme-light ::-webkit-scrollbar-thumb:hover { background: #d97706; }
   .chat-input-bar > p { line-height: 1.35; margin-bottom: 0 !important; }
   .issue-summary-grid, .issue-actions-grid { grid-template-columns: 1fr !important; }
   .issue-visualization { max-width: 100% !important; }
+}
+
+.chat-composer-input::placeholder {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.chat-suggestions {
+  margin-top: 0;
+}
+
+.repos-pane > div:last-child {
+  min-height: 0;
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {

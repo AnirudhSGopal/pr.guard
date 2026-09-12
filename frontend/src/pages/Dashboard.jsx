@@ -10,7 +10,6 @@ import { useRepos, useIssues, useFiles } from '../hooks/useReviews'
 import {
   deleteApiKey,
   getApiKeyStatus,
-  getScopedProvider,
   saveApiKey,
   setActiveProvider,
   setScopedProvider,
@@ -110,18 +109,7 @@ export default function Dashboard() {
   const [mobilePane,    setMobilePane]    = useState('chat')
   const [chatInput,     setChatInput]     = useState('')
   const [autoSend,      setAutoSend]      = useState(false)
-  const [providerLabel, setProviderLabel] = useState('No provider')
   const [apiPanelError, setApiPanelError] = useState('')
-  useEffect(() => {
-    const read = () => {
-      const id = getScopedProvider()
-      setProviderLabel(id ? (PROVIDER_NAMES[id] ?? id) : 'No provider')
-    }
-    read()
-    window.addEventListener('storage', read)
-    const timer = setInterval(read, 1500)
-    return () => { window.removeEventListener('storage', read); clearInterval(timer) }
-  }, [])
 
   const { issues, loading: issuesLoading } = useIssues(selectedRepo)
   const { files,  loading: filesLoading  } = useFiles(selectedRepo)
@@ -188,6 +176,21 @@ export default function Dashboard() {
   }, [hiddenRepos])
 
   const { repos: fetchedRepos, loading: reposLoading, refresh: refreshRepos } = useRepos()
+
+  // Keep the assistant context valid as soon as repositories are available.
+  // This also preserves the context when users switch between mobile panes.
+  useEffect(() => {
+    if (!fetchedRepos.length) {
+      setSelectedRepo(null)
+      return
+    }
+    if (!selectedRepo || !fetchedRepos.some(repo => repo.name === selectedRepo)) {
+      setSelectedRepo(fetchedRepos[0].name)
+      setSelectedIssue(null)
+      setChatInput('')
+      setAutoSend(false)
+    }
+  }, [fetchedRepos, selectedRepo])
 
   const handleRepoConnect = useCallback(async (newRepo) => {
     // Refresh the repository list from the backend
@@ -267,7 +270,6 @@ export default function Dashboard() {
       setApiKeys(masked)
       setActiveId(active)
       setScopedProvider(active)
-      setProviderLabel(PROVIDER_NAMES[active] ?? active)
       setApiPanelError('')
     } catch (err) {
       setApiPanelError(err?.response?.data?.detail || err?.message || 'Failed to load API key status')
@@ -450,8 +452,6 @@ export default function Dashboard() {
         )}
 
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ color: mutedText }}>{providerLabel}</span>
-          <span style={{ color: dark ? '#1e2530' : '#ccc' }}>·</span>
           <span style={{ color: mutedText }}>ChromaDB</span>
           <span style={{ color: dark ? '#1e2530' : '#ccc' }}>·</span>
 
@@ -463,7 +463,7 @@ export default function Dashboard() {
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5l3 3L22 7l-3-3"/>
               </svg>
-              <span style={{ fontSize: 10, fontWeight: 500 }}>{anyConnected ? `${connectedCount} key${connectedCount > 1 ? 's' : ''} set` : 'Set API key'}</span>
+              <span style={{ fontSize: 10, fontWeight: 500 }}>{anyConnected ? `${connectedCount} LLM key${connectedCount > 1 ? 's' : ''} connected` : 'Manage LLM keys'}</span>
               <span style={{ fontSize: 8, opacity: 0.5 }}>{apiPanelOpen ? '▴' : '▾'}</span>
             </button>
 

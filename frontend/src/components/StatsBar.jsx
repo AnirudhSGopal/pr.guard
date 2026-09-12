@@ -1,13 +1,7 @@
 import { useContext, useState, useEffect } from 'react'
 import { ThemeContext } from '../App'
 import { getTheme } from '../utils/helpers'
-import { getApiKeyStatus, getScopedProvider } from '../api/client'
-
-const PROVIDERS = [
-  { id: 'claude', label: 'Claude Sonnet',  sub: 'Anthropic · Best for code' },
-  { id: 'gpt',    label: 'GPT-4o',         sub: 'OpenAI · Most popular'      },
-  { id: 'gemini', label: 'Gemini 1.5 Pro', sub: 'Google · Free tier'         },
-]
+import { getApiKeyStatus } from '../api/client'
 
 export default function RepoList({
   repos,
@@ -27,17 +21,13 @@ export default function RepoList({
   const panelBg   = dark ? '#161e28' : '#ffffff'
   const panelBord = dark ? '#2a3a50' : '#e2e2e2'
 
-  const [activeProvider, setActiveProvider] = useState('claude')
   const [hasKey,         setHasKey]         = useState(false)
   const [hoveredRepo,    setHoveredRepo]    = useState(null)
   const [menuOpen,       setMenuOpen]       = useState(null) // ID of repo with open menu
 
   useEffect(() => {
     const read = async () => {
-      const saved = getScopedProvider()
-      const normalized = saved === 'gpt4o' ? 'gpt' : saved
       const status = await getApiKeyStatus().catch(() => ({ has_any_key: false }))
-      if (normalized) setActiveProvider(normalized)
       setHasKey(Boolean(status?.has_any_key))
     }
     read()
@@ -45,8 +35,6 @@ export default function RepoList({
     const interval = setInterval(read, 8000)
     return () => { window.removeEventListener('prguard:api-keys-updated', read); clearInterval(interval) }
   }, [])
-
-  const providerLabel = PROVIDERS.find(p => p.id === activeProvider)?.label ?? 'No provider'
 
   // Sort repos: Pinned first
   const sorted = [...repos].sort((a, b) => {
@@ -68,12 +56,14 @@ export default function RepoList({
   return (
     <div className="flex flex-col h-full" onClick={() => setMenuOpen(null)}>
 
-      {/* Provider display */}
+      {/* Provider status */}
       <div style={{ borderBottom: `1px solid ${t.border}` }}>
         <div className="px-3 py-2 flex items-center justify-between" style={{ background: t.bg2 }}>
           <div className="flex items-center gap-2">
             <span style={{ color: hasKey ? '#22c55e' : '#f59e0b', fontSize: 7 }}>●</span>
-            <span className="text-[11px] font-medium" style={{ color: t.accentText }}>{providerLabel}</span>
+            <span className="text-[11px] font-medium" style={{ color: t.accentText }}>
+              {hasKey ? 'LLM ready' : 'LLM setup needed'}
+            </span>
           </div>
           <span
             className="text-[10px] flex items-center gap-1 px-1.5 py-0.5 rounded"
