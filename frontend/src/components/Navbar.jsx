@@ -39,15 +39,7 @@ export default function Navbar() {
     >
       {/* Left — logo */}
       <div className="flex items-center gap-2">
-        <div
-          style={{ background: t.accentBg, color: t.accentFg }}
-          className="w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold"
-        >
-          PG
-        </div>
-        <span className="font-bold text-sm" style={{ color: t.text }}>
-          PR<span style={{ color: t.accentText }}>Guard</span>
-        </span>
+        <img src="/prguard-logo.svg" alt="PRGuard" style={{ width: 104, height: 32 }} />
         <span className="text-xs ml-2" style={{ color: t.text3 }}>
           Codebase Learning Assistant
         </span>

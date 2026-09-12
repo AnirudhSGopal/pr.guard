@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="178" height="54" viewBox="0 0 178 54" role="img" aria-labelledby="title">
+  <title id="title">PRGuard</title>
+  <rect x="15" y="9" width="30" height="30" rx="6" fill="#d88900"/>
+  <text x="30" y="29" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="700" fill="#fff">PG</text>
+  <text x="55" y="30" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#171717">PR<tspan fill="#d88900">Guard</tspan></text>
+</svg>

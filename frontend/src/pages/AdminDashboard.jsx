@@ -325,8 +325,7 @@ export default function AdminDashboard() {
 
         <nav className="auth-navbar">
           <div className="nav-logo">
-            <div className="nav-logo-icon">PG</div>
-            <span className="nav-logo-name">PRGuard Admin</span>
+            <img src="/prguard-logo.svg" alt="PRGuard Admin" style={{ width: 104, height: 32 }} />
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">

@@ -382,8 +382,7 @@ export default function Login() {
 
         <nav className="auth-navbar">
           <div className="nav-logo">
-            <div className="nav-logo-icon">PG</div>
-            <span className="nav-logo-name">PRGuard</span>
+            <img src="/prguard-logo.svg" alt="PRGuard" style={{ width: 104, height: 32 }} />
           </div>
           <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
             {theme === "dark" ? "☀" : "◑"}
@@ -392,8 +391,7 @@ export default function Login() {
 
         <div className={`auth-card ${mounted ? "visible" : ""}`}>
           <div className="auth-logo">
-            <div className="auth-logo-icon">PG</div>
-            <span className="auth-logo-name">PRGuard</span>
+            <img src="/prguard-logo.svg" alt="PRGuard" style={{ width: 142, height: 43 }} />
           </div>
 
           <div className="rag-badge">
