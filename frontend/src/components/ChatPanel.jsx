@@ -82,7 +82,7 @@ function ChartBubble({ data, t, dark }) {
   const barW = Math.min(56, Math.floor(460 / Math.max(labels.length, 1)) - 10)
 
   return (
-    <div style={{ background: dark ? '#13161b' : '#fff', border: `1px solid ${t.border}`, borderRadius: 12, padding: '14px 16px', maxWidth: '88%' }}>
+    <div className="responsive-chart" style={{ background: dark ? '#13161b' : '#fff', border: `1px solid ${t.border}`, borderRadius: 12, padding: '14px 16px', maxWidth: '88%' }}>
       {title && <div style={{ fontSize: 10, fontWeight: 600, color: t.text2, marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{title}</div>}
       <svg width="100%" viewBox={`0 0 ${Math.max(labels.length * (barW + 12) + 40, 280)} ${chartH + 46}`} style={{ overflow: 'visible' }}>
         {values.map((v, i) => {
@@ -114,14 +114,14 @@ function IssueVizBubble({ data, t, dark, onFollowUp }) {
   const maxW = Math.max(...(data.files || []).map(f => f.weight || 0), 1)
 
   return (
-    <div style={{ maxWidth: '96%', display: 'flex', flexDirection: 'column', gap: 10 }}>
+    <div className="issue-visualization" style={{ maxWidth: '96%', display: 'flex', flexDirection: 'column', gap: 10 }}>
       <div style={{ background: dark ? '#13161b' : '#fff', border: `1px solid ${t.border}`, borderRadius: 12, padding: '12px 14px' }}>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
           <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 4, background: severityColor + '22', color: severityColor, fontWeight: 600, border: `1px solid ${severityColor}44` }}>{data.severity} severity</span>
           <span style={{ fontSize: 10, padding: '2px 8px', borderRadius: 4, background: dark ? '#1e2535' : '#f0f4ff', color: t.text2, border: `1px solid ${t.border}` }}>Est. {data.effort}</span>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
+        <div className="issue-summary-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
           {[{ label: 'Root cause', value: data.root_cause }, { label: 'Fix summary', value: data.fix_summary }].map((m, i) => (
             <div key={i} style={{ background: dark ? '#0d0f12' : '#f8f8f8', borderRadius: 8, padding: '10px 12px', border: `1px solid ${t.border}` }}>
               <div style={{ fontSize: 9, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>{m.label}</div>
@@ -146,7 +146,7 @@ function IssueVizBubble({ data, t, dark, onFollowUp }) {
         )}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+      <div className="issue-actions-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
         {data.steps?.length > 0 && (
           <div style={{ background: dark ? '#13161b' : '#fff', border: `1px solid ${t.border}`, borderRadius: 12, padding: '12px 14px' }}>
             <div style={{ fontSize: 9, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8 }}>Fix steps</div>
@@ -325,7 +325,7 @@ function NoApiKeyModal({ t, dark, onClose }) {
     <div className="fixed inset-0 flex items-center justify-center z-[99999]"
       style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(3px)' }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}>
-      <div style={{ width: 400, background: panelBg, border: `1px solid ${panelBord}`, borderRadius: 16, overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.6)' }}>
+      <div className="responsive-modal-card" style={{ width: 400, background: panelBg, border: `1px solid ${panelBord}`, borderRadius: 16, overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.6)' }}>
         <div style={{ padding: '18px 20px 14px', borderBottom: `1px solid ${dark ? '#161e28' : '#f0f0f0'}` }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

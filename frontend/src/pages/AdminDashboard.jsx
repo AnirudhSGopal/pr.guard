@@ -228,6 +228,23 @@ const getDashboardStyles = (theme) => {
       .admin-top-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .admin-controls { grid-template-columns: 1fr; }
     }
+
+    @media (max-width: 600px) {
+      .admin-shell {
+        width: calc(100vw - 24px);
+        margin: 68px auto 18px;
+      }
+      .admin-top-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .admin-stat { padding: 10px; }
+      .admin-stat-value { font-size: 22px; }
+      .admin-controls { padding: 10px; gap: 7px; }
+      .admin-btn, .admin-input, .admin-select { min-height: 42px; }
+      .admin-table-wrap { border-radius: 10px; }
+      .admin-table { min-width: 900px; }
+      .admin-table th, .admin-table td { padding: 10px 8px; }
+      .mini-btn { min-height: 36px; padding: 6px 9px; }
+      .admin-side { padding: 10px; }
+    }
   `
 }
 

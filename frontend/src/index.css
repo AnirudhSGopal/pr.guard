@@ -36,3 +36,87 @@ body.theme-dark  ::-webkit-scrollbar-thumb { background: #2a3a4a; border-radius:
 body.theme-light ::-webkit-scrollbar-thumb { background: #c0c0c0; border-radius: 3px; }
 body.theme-dark  ::-webkit-scrollbar-thumb:hover { background: #d97706; }
 body.theme-light ::-webkit-scrollbar-thumb:hover { background: #d97706; }
+
+/* Dashboard layout adapts from the three-column desktop workspace to a
+   focused, touch-friendly pane on phones. */
+.mobile-pane-nav { display: none; }
+
+@media (max-width: 767px) {
+  .dashboard-shell { min-height: 100dvh; }
+  .dashboard-shell > nav { height: 52px !important; padding: 0 12px !important; }
+  .dashboard-shell > nav img { width: 88px !important; height: auto !important; }
+  .dashboard-shell > nav .text-xs { display: none; }
+  .dashboard-shell > nav .gap-3 { gap: 8px !important; }
+  .dashboard-shell > nav .rounded-full { display: none; }
+  .dashboard-shell > nav button { min-width: 44px; min-height: 44px; }
+  .dashboard-shell > nav button.text-\[10px\] { min-width: 0; min-height: 44px; padding: 0 6px; }
+
+  .dashboard-layout { position: relative; flex-direction: column !important; }
+  .mobile-pane-nav {
+    display: flex;
+    order: -1;
+    flex: 0 0 44px;
+    gap: 4px;
+    padding: 4px 8px;
+    background: inherit;
+    border-bottom: 1px solid currentColor;
+    border-color: rgba(128, 128, 128, .22);
+  }
+  .mobile-pane-nav button {
+    flex: 1;
+    min-height: 44px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: inherit;
+    opacity: .62;
+    font: 500 11px 'IBM Plex Mono', monospace;
+  }
+  .mobile-pane-nav button.active {
+    opacity: 1;
+    color: #f59e0b;
+    background: rgba(245, 158, 11, .12);
+  }
+  .dashboard-pane {
+    display: none !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    flex: 1 1 auto !important;
+  }
+  .dashboard-pane.mobile-active { display: flex !important; }
+  .dashboard-layout > [title="Drag to resize"] { display: none !important; }
+  .dashboard-status-bar {
+    min-height: 34px !important;
+    height: auto !important;
+    padding: 5px 10px !important;
+    gap: 8px !important;
+    font-size: 9px !important;
+    flex-wrap: wrap;
+  }
+  .dashboard-status-bar > span:nth-child(n+4),
+  .dashboard-status-bar > div > span:not(:first-child) { display: none; }
+  .dashboard-status-bar > div { margin-left: auto !important; }
+  .dashboard-status-bar button { min-height: 28px; padding: 4px 6px !important; }
+
+  /* Keep chat content readable without forcing horizontal page scrolling. */
+  .chat-pane textarea, .chat-pane input { font-size: 16px !important; }
+  .chat-pane button { min-height: 44px; }
+  .chat-pane svg { max-width: 100%; }
+  .issue-summary-grid, .issue-actions-grid { grid-template-columns: 1fr !important; }
+  .issue-visualization { max-width: 100% !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .dashboard-pane.repos-pane { width: 170px !important; min-width: 170px !important; }
+  .dashboard-pane.issues-pane { width: 190px !important; min-width: 190px !important; }
+  .dashboard-status-bar { padding-left: 10px !important; padding-right: 10px !important; gap: 8px !important; }
+}
+
+@media (max-width: 420px) {
+  .dashboard-status-bar > span:first-child { display: none; }
+}
+
+/* Prevent modal cards and visualizations from exceeding the viewport. */
+.responsive-modal-card { width: min(400px, calc(100vw - 24px)) !important; max-height: calc(100dvh - 24px); overflow-y: auto !important; }
+.responsive-chart { max-width: 100%; overflow-x: auto; }

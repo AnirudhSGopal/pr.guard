@@ -107,6 +107,7 @@ export default function Dashboard() {
   const [pendingRepo,   setPendingRepo]   = useState(null)
   const [selectedIssue, setSelectedIssue] = useState(null)
   const [leftTab,       setLeftTab]       = useState('issues')
+  const [mobilePane,    setMobilePane]    = useState('chat')
   const [chatInput,     setChatInput]     = useState('')
   const [autoSend,      setAutoSend]      = useState(false)
   const [providerLabel, setProviderLabel] = useState('No provider')
@@ -339,14 +340,22 @@ export default function Dashboard() {
   const eyeColor  = dark ? '#94a3b8' : '#666'
 
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: t.bg, color: t.text }}>
+    <div className="dashboard-shell" style={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: t.bg, color: t.text }}>
       <Navbar />
 
       {/* ── Main layout ── */}
-      <div ref={containerRef} style={{ display: 'flex', flex: 1, overflow: 'hidden', minHeight: 0 }}>
+      <div className="dashboard-layout" ref={containerRef} style={{ display: 'flex', flex: 1, overflow: 'hidden', minHeight: 0 }}>
+        <div className="mobile-pane-nav" role="tablist" aria-label="Dashboard sections">
+          {[['repos', 'Repositories'], ['issues', 'Issues & files'], ['chat', 'Assistant']].map(([id, label]) => (
+            <button key={id} type="button" role="tab" aria-selected={mobilePane === id}
+              className={mobilePane === id ? 'active' : ''} onClick={() => setMobilePane(id)}>
+              {label}
+            </button>
+          ))}
+        </div>
 
         {/* ── Repos panel ── */}
-        <div style={{
+        <div className={`dashboard-pane repos-pane ${mobilePane === 'repos' ? 'mobile-active' : ''}`} style={{
           width: repoWidth, minWidth: repoWidth, maxWidth: repoWidth,
           flexShrink: 0, display: 'flex', flexDirection: 'column',
           overflow: 'hidden', background: t.bg2,
@@ -372,7 +381,7 @@ export default function Dashboard() {
         <ResizeHandle dark={dark} onMouseDown={(e) => startResize('repo', e)} />
 
         {/* ── Issues / Files panel ── */}
-        <div style={{
+        <div className={`dashboard-pane issues-pane ${mobilePane === 'issues' ? 'mobile-active' : ''}`} style={{
           width: issueWidth, minWidth: issueWidth, maxWidth: issueWidth,
           flexShrink: 0, display: 'flex', flexDirection: 'column',
           overflow: 'hidden', background: t.bg2,
@@ -405,7 +414,7 @@ export default function Dashboard() {
         <ResizeHandle dark={dark} onMouseDown={(e) => startResize('issue', e)} />
 
         {/* ── Chat panel ── */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
+        <div className={`dashboard-pane chat-pane ${mobilePane === 'chat' ? 'mobile-active' : ''}`} style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
           <ChatPanel
             selectedRepo={selectedRepo}
             selectedIssue={selectedIssue}
@@ -419,7 +428,7 @@ export default function Dashboard() {
       </div>
 
       {/* ── Status bar ── */}
-      <div style={{
+      <div className="dashboard-status-bar" style={{
         height: 26, flexShrink: 0,
         display: 'flex', alignItems: 'center', gap: 16, padding: '0 16px',
         background: dark ? '#0d1117' : '#f0f0f0',
@@ -537,7 +546,7 @@ export default function Dashboard() {
       {/* ── Repo switch confirmation ── */}
       {pendingRepo && (
         <div style={{ position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999, background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(3px)' }}>
-          <div style={{ width: 380, background: dark ? '#0f1318' : '#fff', border: `1px solid ${dark ? '#1e2a3a' : '#e2e2e2'}`, borderRadius: 12, overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.6)' }}>
+          <div className="responsive-modal-card" style={{ width: 380, background: dark ? '#0f1318' : '#fff', border: `1px solid ${dark ? '#1e2a3a' : '#e2e2e2'}`, borderRadius: 12, overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.6)' }}>
             <div style={{ padding: '16px 20px', borderBottom: `1px solid ${dark ? '#161e28' : '#f0f0f0'}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round">
