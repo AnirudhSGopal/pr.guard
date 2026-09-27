@@ -78,6 +78,12 @@ Final-year **Computer Science undergraduate** at Acharya Institute of Technology
 - Integrated **GitHub OAuth 2.0**, WebSocket-based real-time chat, and AI-driven root cause analysis with severity scoring
 - Containerised with **Docker Compose**; shipped interactive repo visualisation with one-click PDF report generation
 
+<div align="center">
+  <img src="prguardasset/landingpage.png" alt="PRGuard Landing Page" width="800"/>
+  <br/><br/>
+  <img src="prguardasset/dashboard.png" alt="PRGuard Dashboard" width="800"/>
+</div>
+
 ---
 
 ### 🔹 Infera — AI Productivity SaaS Platform
